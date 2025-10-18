@@ -45,6 +45,7 @@ function disegnaGriglia(){
   let min1 = min(valori1);
   let max1 = max(valori1)
 
+
   background(255); //metto uno sfondo 
 
   //definisco le mie variabili 
@@ -120,18 +121,45 @@ function disegnaGriglia(){
 function disegnaCentro (riga, x, y, lato, min1, max1){
   let v1 = riga.getNum(1); //legge il valore della colonna 1 associato alla riga
 
+  let valori2 = table.getColumn(2).map(Number);
+  let min2 = min(valori2);
+  let max2 = max(valori2)
+
+  let coloreMin2 = color(255,255,153);
+  let coloreMax2 = color(102,102,0);
+
   //stesso ragionamento per il colore 
   let diam; //creo una nuova variabile 
   if (isNaN(v1) || min1 === max1) { //isNaN v mi dice di controllare che v sia un numero valido 
-  diam = 0.5; // caso particolare, se tutti i valori sono uguali, t = 0.5
+  diam = 0.5; // caso particolare, se tutti i valori sono uguali, diam = 0.5
   } else {
-  diam= map(v1, min1, max1, 8, 20);
-  //uso map per associare il vMin a 0 e il vMax a 1, map lavora solo con numeri e non con i colori 
- 
-  noStroke();
-  fill("yellow"); // nero (cambialo se vuoi)
-  circle(x + lato/2, y + lato/2, diam);
+  diam= map(v1, min1, max1, 8, 20); 
+  //uso map per associare le due scale
+  
+  let s = diam / lato;
 
+   let v2 = riga.getNum(2); //legge il numero della prima colonna associato a quella riga 
+
+    let p; //creo una nuova variabile 
+  if (isNaN(v2) || min2 === max2) { //isNaN v mi dice di controllare che v sia un numero valido 
+  p = 0.5; // caso particolare, se tutti i valori sono uguali, t = 0.5
+  } else {
+  p = map(v2, min2, max2, 0, 1);
+  //uso map per associare il vMin a 0 e il vMax a 1, map lavora solo con numeri e non con i colori 
+  }
+
+  let coloreInterno = lerpColor(coloreMin2, coloreMax2, p);
+//mischia i colori 
+
+  push (); //creo la mia bolla 
+  translate(x + lato / 2, y + lato / 2);
+  //sposto il centro nel centro dei quadrati 
+  noStroke();
+  fill(coloreInterno); 
+
+  scale (s);
+  circle(0, 0, lato);
+  pop ();
 }
 
 }
