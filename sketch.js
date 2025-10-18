@@ -1,3 +1,5 @@
+let table;
+
 function preload() {
   // put preload code here
 
@@ -52,11 +54,21 @@ function disegnaGriglia(){
   //floor arrotonda per difetto 
   nColonne = max(1, nColonne); // almeno una colonna, anche su schermi stretti
 
-  //calcolo quante righe sono necessarie per andare poi a modulare l'altezza 
-  let righeNecessarie = ceil(nRighe / nColonne);
-  //ceil approssima 
-  let totalHeight = paddingEsterno * 2 + righeNecessarie * lato;
-  //calcolo altezza totale 
+  //COLORARE IN BASE AI VALORI DELLA COLONNA 0 
+  //inserisco le mie prime variabili per cercare massimo e minimo 
+  //ARRAY "VALORI"
+  let valori = table.getColumn(0).map(Number);
+  //table.getColum prende tutti i valori della prima colonna (0)
+  //indipendentemente da come si chiama nell'header 
+  //map converte le stringhe in numeri 
+  let vMin = min(valori);
+  let vMax = max(valori);
+
+  //ora che so i valori estremi della mia colonna di numeri,
+  //devo scegliere i valori estremi dei miei colori 
+
+  let coloreMin = color(152,251,152);
+  let coloreMax = color(60,179,113);
 
   //ora devo fare la GRIGLIA 
   // i è il numero dei miei quadrati in fila, se voglio metterli in griglia 
@@ -64,17 +76,35 @@ function disegnaGriglia(){
   for (let i = 0; i < nRighe; i++) {
     
     let c = i % nColonne;             // quale coloonna sono 
+    //serve per andare a capo 
+    //riparte da 0 ogni volta che vado a capo
+    //"quanto avanza"
     let r = floor(i / nColonne);      // quale riga 
+    //cresce di uno ogni volta che vado a capo
 
     // Coordinate del quadrato:
     // partiamo da paddingEsterno e poi aggiungiamo multipli del LATO (nessun padding interno)
     let x = paddingEsterno + c * lato;
     let y = paddingEsterno + r * lato;
 
+    let riga = table.getRow(i); //prendo la riga, i è l'indice del quadrato
+    let v = riga.getNum(0); //legge il numero della prima colonna associato a quella riga 
+
+    let t; //creo una nuova variabile 
+  if (isNaN(v) || vMin === vMax) { //isNaN v mi dice di controllare che v sia un numero valido 
+  t = 0.5; // caso particolare, se tutti i valori sono uguali, t = 0.5
+  } else {
+  t = map(v, vMin, vMax, 0, 1);
+  //uso map per associare il vMin a 0 e il vMax a 1, map lavora solo con numeri e non con i colori 
+  }
+
+  let colore = lerpColor(coloreMin, coloreMax, t);
+//mischia i colori 
+
     // Disegno il quadrato
-    stroke(0);
+    stroke(255);
     strokeWeight(2);
-    fill(255);        // bianco (scegli tu)
+    fill(colore);        // metto qui la mia nuova variabile che determina il colore dei quadrati 
     rect(x, y, lato, lato, 5);
   }
 
