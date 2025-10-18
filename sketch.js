@@ -1,4 +1,4 @@
-let table;
+let table; //cario qui il mio CSV
 
 function preload() {
   // put preload code here
@@ -22,12 +22,13 @@ function setup() {
   let paddingEsterno = 20;
 
   // quante colonne entrano in larghezza
-  const nRighe = table.getRowCount();
-  const nColonne = max(1, floor((windowWidth - paddingEsterno * 2) / lato));
+  let nRighe = table.getRowCount(); //quante righe ho nel mio CSV
+  let nColonne = max(1, floor((windowWidth - paddingEsterno * 2) / lato));
+  //quante colonne, quindi anche quante caselle per riga 
 
-  // quante righe servono e altezza totale richiesta
-  const righeNecessarie = ceil(nRighe / nColonne);
-  const totalHeight = paddingEsterno * 2 + righeNecessarie * lato;
+  // quante righe servono e altezza totale 
+  let righeNecessarie = ceil(nRighe / nColonne);
+  let totalHeight = paddingEsterno * 2 + righeNecessarie * lato;
 
   // canvas alto quanto serve 
   createCanvas(windowWidth, max(windowHeight, totalHeight));
@@ -38,15 +39,14 @@ function setup() {
 }
 
 function draw() {
-  // put drawing code here
 }
 
 function disegnaGriglia(){
 
   //variabili colonna 1
   let valori1 = table.getColumn(1).map(Number); //ARRAY 1
-  let min1 = min(valori1);
-  let max1 = max(valori1)
+  let min1 = min(valori1); //trovo minimo dell'array
+  let max1 = max(valori1); //trovo massimo nel mio array 
 
   //variabili colonna 3
   let valori3 = table.getColumn(3).map(Number); //ARRAY 3
@@ -66,6 +66,7 @@ function disegnaGriglia(){
   let nColonne = floor((width-paddingEsterno*2)/lato);
   //floor arrotonda per difetto 
   nColonne = max(1, nColonne); // almeno una colonna, anche su schermi stretti
+//ugaule a sopra 
 
   //COLORARE IN BASE AI VALORI DELLA COLONNA 0 
   //inserisco le mie prime variabili per cercare massimo e minimo 
@@ -80,13 +81,13 @@ function disegnaGriglia(){
   //ora che so i valori estremi della mia colonna di numeri,
   //devo scegliere i valori estremi dei miei colori 
 
-  let coloreMin = color(152,251,152);
-  let coloreMax = color(60,179,113);
+  let coloreMin = color(144,238,144);
+  let coloreMax = color(0,168,119);
 
   //ora devo fare la GRIGLIA 
   // i è il numero dei miei quadrati in fila, se voglio metterli in griglia 
   //devo dividerli per le mie colonne (calcolate sopra), così gli dico di andare a capo.
-  for (let i = 0; i < nRighe; i++) {
+  for (let i = 0; i < nRighe; i++) { //CHIAVE DI TUTTO, mi dice di fare quello che sto facendo per ogni i 
     
     let c = i % nColonne;             // quale coloonna sono 
     //serve per andare a capo 
@@ -140,8 +141,8 @@ function disegnaCentro (riga, x, y, lato, min1, max1){
   let min2 = min(valori2);
   let max2 = max(valori2)
 
-  let coloreMin2 = color(255,255,153);
-  let coloreMax2 = color(102,102,0);
+  let coloreMin2 = color(255,250,205);
+  let coloreMax2 = color(255,196,12);
 
   //stesso ragionamento per il colore 
   let diam; //creo una nuova variabile 
@@ -151,7 +152,7 @@ function disegnaCentro (riga, x, y, lato, min1, max1){
   diam= map(v1, min1, max1, 8, 20); 
   //uso map per associare le due scale
   
-  let s = diam / lato;
+  let s = diam / lato; 
 
    let v2 = riga.getNum(2); //legge il numero della prima colonna associato a quella riga 
 
@@ -168,8 +169,10 @@ function disegnaCentro (riga, x, y, lato, min1, max1){
 
   push (); //creo la mia bolla 
   translate(x + lato / 2, y + lato / 2);
-  //sposto il centro nel centro dei quadrati 
-  noStroke();
+  //sposto il centro nel centro dei quadrati
+  //ora il mio centro è il CENTRO DEL QUADRATO i-ESIMO
+  stroke(204,85,0);
+  strokeWeight(1);
   fill(coloreInterno); 
 
   scale (s);
@@ -196,14 +199,14 @@ let angolo; //creo una nuova variabile
   let max4 = max(valori4)
 
   let coloreMin4 = color(255,228,225);
-  let coloreMax4 = color(204,51,102);
+  let coloreMax4 = color(218,50,135);
 
 
   //DISEGNO I PETALI 
   //definisco qualche variabile 
   let nPetali = 8;
   let step = 360/nPetali; 
-  let distPetali = lato*0.28;
+  let distPetali = lato*0.28; //raggio a cui metto il centro del petalo
   let wPetali = lato*0.32;
   let hPetali = lato*0.16;
 
@@ -225,13 +228,19 @@ let angolo; //creo una nuova variabile
   translate(x + lato / 2, y + lato / 2);
  
   //colore del petalo 
-  noStroke();
-  fill(colorePetali);
+  stroke(255,193,204);
+  strokeWeight(0.5);
+  
 
    // Disegno 8 petali come ellissi ruotate
   for (let k = 0; k < nPetali; k++) { //k è il mio petalo
     push(); //serve per applicare la trasformazione solo qui 
-    rotate(angolo + k * step);
+    rotate(angolo + k * step); //angolo dipende dal dato della colonna 3
+      if (k === 0 || k === 4) {
+    fill(212,112,162);         
+  } else {
+    fill(colorePetali); // colore calcolato
+  }
     ellipse(distPetali, 0, wPetali, hPetali); 
     //distPetali è il centro del fiore 
     pop();
@@ -239,8 +248,6 @@ let angolo; //creo una nuova variabile
 
   pop();
   }
-
-
 
 
 }
